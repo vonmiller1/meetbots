@@ -1,0 +1,9 @@
+moviepy
+SpeechRecognition
+transformers
+librosa
+numpy
+scikit-learn
+nltk
+flask
+python-dotenv
