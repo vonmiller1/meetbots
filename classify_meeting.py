@@ -1,19 +1,26 @@
-def classify_meeting(text):
-    """Classify the meeting type (e.g., client, interview, etc.) based on keywords."""
-    if "client" in text or "project update" in text:
-        meeting_type = "Client Meeting"
-    elif "interview" in text:
-        meeting_type = "Interview"
-    elif "discussion" in text and "team" in text:
-        meeting_type = "Group Discussion"
-    else:
-        meeting_type = "General Meeting"
+import argparse
+from pathlib import Path
 
-    return meeting_type
+
+def classify_meeting(text):
+    """Classify the meeting type based on keywords."""
+    text = text.casefold()
+    if "client" in text or "project update" in text:
+        return "Client Meeting"
+    if "interview" in text:
+        return "Interview"
+    if "discussion" in text and "team" in text:
+        return "Group Discussion"
+    return "General Meeting"
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Classify a meeting transcript.")
+    parser.add_argument("transcript", type=Path, help="Path to a UTF-8 transcript")
+    args = parser.parse_args()
+    text = args.transcript.read_text(encoding="utf-8")
+    print(f"Meeting Type: {classify_meeting(text)}")
+
 
 if __name__ == "__main__":
-    with open("data/text/transcription.txt", "r") as file:
-        text = file.read()
-
-    meeting_type = classify_meeting(text)
-    print("Meeting Type: ", meeting_type)
+    main()

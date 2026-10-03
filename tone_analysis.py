@@ -1,22 +1,24 @@
-def analyze_tone(text):
-    """Analyze the tone of the given text.
-    
-    The tone can be categorized based on pace, language style, etc.
-    This is a simplified approach and can be extended using NLP models.
-    """
-    # Example analysis: Checking for specific keywords
-    if "urgent" in text or "immediately" in text:
-        tone = "Fast-paced and urgent"
-    elif "discussion" in text or "meeting" in text:
-        tone = "Professional"
-    else:
-        tone = "Casual"
+import argparse
+from pathlib import Path
 
-    return tone
+
+def analyze_tone(text):
+    """Categorize the tone using a small set of keyword rules."""
+    text = text.casefold()
+    if "urgent" in text or "immediately" in text:
+        return "Fast-paced and urgent"
+    if "discussion" in text or "meeting" in text:
+        return "Professional"
+    return "Casual"
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Analyze the tone of a transcript.")
+    parser.add_argument("transcript", type=Path, help="Path to a UTF-8 transcript")
+    args = parser.parse_args()
+    tone = analyze_tone(args.transcript.read_text(encoding="utf-8"))
+    print(f"Tone Analysis: {tone}")
+
 
 if __name__ == "__main__":
-    with open("data/text/transcription.txt", "r") as file:
-        text = file.read()
-
-    tone = analyze_tone(text)
-    print("Tone Analysis: ", tone)
+    main()
