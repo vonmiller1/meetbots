@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+speaker_segments/
+summary.txt
+plan_of_action.txt
