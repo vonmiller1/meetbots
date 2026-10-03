@@ -1,18 +1,28 @@
-def generate_plan_of_action(summary):
-    """Generate a simple plan of action based on the meeting summary."""
-    # Example: Split the summary into action items
-    action_items = summary.split(". ")
-    plan_of_action = [f"- {item.strip()}" for item in action_items if item]
+import argparse
+from pathlib import Path
 
-    return "\n".join(plan_of_action)
+
+def generate_plan_of_action(summary):
+    """Turn summary sentences into a simple list of action items."""
+    action_items = (item.strip() for item in summary.split("."))
+    return "\n".join(f"- {item}" for item in action_items if item)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Create an action-item list from a summary.")
+    parser.add_argument("summary", type=Path, help="Path to a UTF-8 meeting summary")
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path("plan_of_action.txt"),
+        help="Output path (default: plan_of_action.txt)",
+    )
+    args = parser.parse_args()
+
+    plan = generate_plan_of_action(args.summary.read_text(encoding="utf-8"))
+    args.output.write_text(plan, encoding="utf-8")
+    print(f"Plan of action saved to: {args.output}")
+
 
 if __name__ == "__main__":
-    with open("data/text/summary.txt", "r") as file:
-        summary = file.read()
-
-    plan_of_action = generate_plan_of_action(summary)
-    print("Plan of Action: ", plan_of_action)
-
-    # Save the plan of action to a text file
-    with open("data/text/plan_of_action.txt", "w") as f:
-        f.write(plan_of_action)
+    main()
