@@ -1,14 +1,25 @@
-from transformers import pipeline
+import argparse
+from pathlib import Path
+
 
 def analyze_sentiment(text):
-    """Analyze sentiment of the given text."""
+    """Analyze the sentiment of non-empty text."""
+    if not text.strip():
+        raise ValueError("Cannot analyze sentiment of empty text.")
+
+    from transformers import pipeline
+
     sentiment_analyzer = pipeline("sentiment-analysis")
-    sentiment = sentiment_analyzer(text)
-    return sentiment
+    return sentiment_analyzer(text)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Analyze transcript sentiment.")
+    parser.add_argument("transcript", type=Path, help="Path to a UTF-8 transcript")
+    args = parser.parse_args()
+    sentiment = analyze_sentiment(args.transcript.read_text(encoding="utf-8"))
+    print(f"Sentiment Analysis: {sentiment}")
+
 
 if __name__ == "__main__":
-    with open("data/text/transcription.txt", "r") as file:
-        text = file.read()
-
-    sentiment = analyze_sentiment(text)
-    print("Sentiment Analysis: ", sentiment)
+    main()
