@@ -2,11 +2,21 @@ import argparse
 from pathlib import Path
 
 
+_WHISPER_MODELS = frozenset(
+    {"tiny", "base", "small", "medium", "large", "large-v2", "large-v3", "turbo"}
+)
+
+
 def audio_to_text(audio_file_path, model_type="base"):
     """Transcribe an audio file with Whisper."""
     audio_path = Path(audio_file_path)
     if not audio_path.is_file():
         raise FileNotFoundError(f"Audio file not found: {audio_path}")
+    if model_type not in _WHISPER_MODELS:
+        raise ValueError(
+            f"Unsupported Whisper model {model_type!r}; choose one of: "
+            f"{', '.join(sorted(_WHISPER_MODELS))}"
+        )
 
     import whisper
 
