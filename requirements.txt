@@ -5,8 +5,6 @@ librosa
 numpy
 scikit-learn
 nltk
-flask
-python-dotenv
 openai-whisper
 pyAudioAnalysis
 pydub
