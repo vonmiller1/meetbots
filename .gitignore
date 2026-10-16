@@ -1,8 +1,12 @@
 .env
 .env.*
 !.env.example
+.venv/
+venv/
 __pycache__/
 *.py[cod]
 speaker_segments/
 summary.txt
 plan_of_action.txt
+*.wav
+transcript.txt
