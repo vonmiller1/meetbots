@@ -33,6 +33,9 @@ def main():
     )
     args = parser.parse_args()
 
+    if not args.summary.is_file():
+        raise FileNotFoundError(f"Summary file not found: {args.summary}")
+
     plan = generate_plan_of_action(args.summary.read_text(encoding="utf-8"))
     args.output.write_text(plan, encoding="utf-8")
     print(f"Plan of action saved to: {args.output}")
