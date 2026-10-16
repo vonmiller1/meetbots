@@ -4,6 +4,9 @@ from pathlib import Path
 
 def classify_meeting(text):
     """Classify the meeting type based on keywords."""
+    if not text.strip():
+        raise ValueError("Cannot classify empty transcript text.")
+
     text = text.casefold()
     if "client" in text or "project update" in text:
         return "Client Meeting"
@@ -18,6 +21,10 @@ def main():
     parser = argparse.ArgumentParser(description="Classify a meeting transcript.")
     parser.add_argument("transcript", type=Path, help="Path to a UTF-8 transcript")
     args = parser.parse_args()
+
+    if not args.transcript.is_file():
+        raise FileNotFoundError(f"Transcript file not found: {args.transcript}")
+
     text = args.transcript.read_text(encoding="utf-8")
     print(f"Meeting Type: {classify_meeting(text)}")
 
