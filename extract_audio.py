@@ -10,11 +10,14 @@ def extract_audio_from_video(video_file_path, output_audio_path):
 
     from moviepy.editor import VideoFileClip
 
+    output_path = Path(output_audio_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
     video = VideoFileClip(str(video_path))
     try:
         if video.audio is None:
             raise ValueError(f"Video has no audio track: {video_path}")
-        video.audio.write_audiofile(str(output_audio_path))
+        video.audio.write_audiofile(str(output_path))
     finally:
         video.close()
 
