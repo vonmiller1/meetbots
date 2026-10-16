@@ -34,6 +34,9 @@ def main():
     )
     args = parser.parse_args()
 
+    if not args.transcript.is_file():
+        raise FileNotFoundError(f"Transcript file not found: {args.transcript}")
+
     summary = summarize_text(args.transcript.read_text(encoding="utf-8"))
     args.output.write_text(summary, encoding="utf-8")
     print(f"Summary saved to: {args.output}")
