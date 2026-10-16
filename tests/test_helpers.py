@@ -30,6 +30,14 @@ class MeetingHelperTests(unittest.TestCase):
         )
         self.assertEqual(generate_plan_of_action("..."), "")
 
+    def test_action_plan_handles_punctuation_and_existing_lists(self):
+        self.assertEqual(
+            generate_plan_of_action(
+                "Review the draft? Assign an owner!\n- Share the notes.\n2. Confirm"
+            ),
+            "- Review the draft\n- Assign an owner\n- Share the notes\n- Confirm",
+        )
+
     def test_empty_nlp_inputs_are_rejected(self):
         with self.assertRaisesRegex(ValueError, "empty text"):
             summarize_text(" \n ")
