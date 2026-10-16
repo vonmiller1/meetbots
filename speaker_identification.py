@@ -22,6 +22,8 @@ def perform_speaker_diarization(audio_file_path, n_speakers=2, output_dir="speak
     audio = AudioSegment.from_file(str(audio_path))
     segment_duration = len(audio) / len(classes)
     output_path = Path(output_dir)
+    if output_path.exists() and not output_path.is_dir():
+        raise ValueError(f"Output path is not a directory: {output_path}")
     output_path.mkdir(parents=True, exist_ok=True)
 
     speaker_segments = {}
