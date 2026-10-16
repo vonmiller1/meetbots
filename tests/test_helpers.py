@@ -43,6 +43,10 @@ class MeetingHelperTests(unittest.TestCase):
             summarize_text(" \n ")
         with self.assertRaisesRegex(ValueError, "empty text"):
             analyze_sentiment("")
+        with self.assertRaisesRegex(ValueError, "empty text"):
+            analyze_tone("  ")
+        with self.assertRaisesRegex(ValueError, "empty transcript"):
+            classify_meeting("\n")
 
     def test_short_transcript_uses_valid_summary_length_limits(self):
         summarizer = Mock(return_value=[{"summary_text": "Short summary."}])
@@ -63,6 +67,21 @@ class MeetingHelperTests(unittest.TestCase):
             extract_audio_from_video(missing_file, "output.wav")
         with self.assertRaises(FileNotFoundError):
             perform_speaker_diarization(missing_file)
+
+    def test_whisper_rejects_unknown_model_before_loading(self):
+        with tempfile.NamedTemporaryFile(suffix=".wav") as handle:
+            path = Path(handle.name)
+            with self.assertRaisesRegex(ValueError, "Unsupported Whisper model"):
+                audio_to_text(path, model_type="not-a-model")
+
+    def test_sentiment_truncates_very_long_input(self):
+        analyzer = Mock(return_value=[{"label": "POSITIVE", "score": 0.9}])
+        transformers = SimpleNamespace(pipeline=Mock(return_value=analyzer))
+        long_text = "word " * 5000
+        with patch.dict("sys.modules", {"transformers": transformers}):
+            analyze_sentiment(long_text)
+        passed_text = analyzer.call_args.args[0]
+        self.assertLessEqual(len(passed_text), 4000)
 
 
 if __name__ == "__main__":
