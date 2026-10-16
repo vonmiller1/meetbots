@@ -1,11 +1,25 @@
 import argparse
+import re
 from pathlib import Path
 
 
+_ITEM_BOUNDARY = re.compile(r"(?<=[.!?])\s+")
+_LIST_MARKER = re.compile(r"^(?:[-*+]\s+|\d+[.)]\s+)")
+
+
 def generate_plan_of_action(summary):
-    """Turn summary sentences into a simple list of action items."""
-    action_items = (item.strip() for item in summary.split("."))
-    return "\n".join(f"- {item}" for item in action_items if item)
+    """Format summary sentences or existing list entries as bullet points."""
+    action_items = []
+    for line in summary.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        items = [line] if _LIST_MARKER.match(line) else _ITEM_BOUNDARY.split(line)
+        for item in items:
+            item = _LIST_MARKER.sub("", item.strip()).rstrip(".!?").strip()
+            if item:
+                action_items.append(f"- {item}")
+    return "\n".join(action_items)
 
 
 def main():
